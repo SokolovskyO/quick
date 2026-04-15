@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prok — ИИ-помощник для текста на Windows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080e;--surface:#0e0e18;--card:#111119;--border:rgba(255,255,255,0.07);--accent:#6c5ce7;--accent2:#fd9644;--text:#eeedf5;--sub:#8f8da6;--muted:#4e4c63}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Golos Text',sans-serif;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:.4;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")}
+
+nav{position:fixed;top:0;left:0;right:0;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 52px;z-index:200;background:rgba(8,8,14,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:21px;letter-spacing:-1px;color:var(--text);text-decoration:none}
+.logo b{color:var(--accent)}
+.nav-r{display:flex;gap:28px;align-items:center}
+.nav-r a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+.nav-r a:hover{color:var(--text)}
+.nav-btn{background:var(--accent)!important;color:#fff!important;padding:8px 22px!important;border-radius:7px!important;font-weight:700!important;transition:opacity .2s,transform .2s!important}
+.nav-btn:hover{opacity:.85!important;transform:translateY(-1px)!important}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:110px 24px 90px;position:relative;overflow:hidden}
+.orb{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(108,92,231,.09) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-58%);pointer-events:none;animation:breathe 8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:translate(-50%,-58%) scale(1)}50%{transform:translate(-50%,-58%) scale(1.1)}}
+.chip{display:inline-flex;align-items:center;gap:8px;background:rgba(108,92,231,.1);border:1px solid rgba(108,92,231,.22);border-radius:100px;padding:6px 16px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#9f96f0;margin-bottom:44px;animation:fadeUp .65s ease both}
+.chip-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+h1{font-family:'Unbounded',sans-serif;font-size:clamp(46px,8vw,96px);font-weight:900;line-height:.94;letter-spacing:-4px;margin-bottom:30px;animation:fadeUp .65s .1s ease both}
+h1 .grad{display:block;background:linear-gradient(110deg,var(--accent) 0%,#a29bf7 45%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-p{font-size:clamp(15px,1.8vw,19px);color:var(--sub);line-height:1.72;max-width:500px;margin-bottom:52px;animation:fadeUp .65s .18s ease both}
+.hero-p strong{color:var(--text);font-weight:600}
+.btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;animation:fadeUp .65s .26s ease both}
+.btn-p{background:var(--accent);color:#fff;font-family:'Golos Text',sans-serif;font-weight:700;font-size:16px;padding:14px 38px;border-radius:9px;text-decoration:none;border:none;cursor:pointer;box-shadow:0 0 52px rgba(108,92,231,.3);transition:transform .2s,box-shadow .2s}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 0 72px rgba(108,92,231,.45)}
+.btn-g{background:transparent;color:var(--muted);font-family:'Golos Text',sans-serif;font-weight:500;font-size:16px;padding:14px 30px;border-radius:9px;text-decoration:none;border:1px solid var(--border);cursor:pointer;transition:color .2s,border-color .2s}
+.btn-g:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+section{padding:96px 24px}
+.wrap{max-width:1060px;margin:0 auto}
+.wrap-md{max-width:780px;margin:0 auto}
+.lbl{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+h2{font-family:'Unbounded',sans-serif;font-size:clamp(26px,3.5vw,44px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px}
+.s-sub{color:var(--sub);font-size:17px;line-height:1.65;max-width:500px}
+.div{height:1px;background:var(--border);margin:0 auto;max-width:1060px}
+
+/* ── DEMO ── */
+.demo-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;position:relative;
+  margin-top:52px;
+  box-shadow:0 40px 80px rgba(0,0,0,.5);
+}
+.demo-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(108,92,231,.55),transparent)}
+.demo-bar{display:flex;align-items:center;gap:7px;padding:13px 18px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2)}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#ffbd2e}.dot.g{background:#28c840}
+.demo-bar-title{margin-left:10px;font-size:12px;color:var(--muted);font-weight:500}
+
+/* action tabs */
+.demo-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:20px 24px 0}
+.tab{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:8px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  color:var(--muted);font-family:'Golos Text',sans-serif;
+  font-size:13px;font-weight:600;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.tab:hover{background:rgba(108,92,231,.1);border-color:rgba(108,92,231,.25);color:var(--text)}
+.tab.active{background:rgba(108,92,231,.18);border-color:rgba(108,92,231,.5);color:#c4bdff}
+
+/* text panels */
+.demo-panels{padding:20px 24px 28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.panel{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.panel-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.panel-text{font-size:14px;line-height:1.75;color:var(--sub);min-height:80px}
+.panel.out .panel-lbl{color:var(--accent)}
+.panel.out{border-color:rgba(108,92,231,.2);background:rgba(108,92,231,.05)}
+.panel.out .panel-text{color:var(--text)}
+
+/* highlight differences */
+.hi{color:var(--accent2);font-weight:600}
+
+/* typing cursor animation */
+.panel.out .panel-text{position:relative}
+.typing::after{content:'|';color:var(--accent);animation:cur .7s step-end infinite}
+@keyframes cur{0%,100%{opacity:1}50%{opacity:0}}
+
+/* fade transition */
+.panel-text{transition:opacity .2s}
+.panel-text.fade{opacity:0}
+
+/* STEPS / FEATS / PRICING */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.step{padding:40px 30px;background:var(--card);border-right:1px solid var(--border);transition:background .2s}
+.step:last-child{border-right:none}
+.step:hover{background:#14141e}
+.step-n{font-family:'Unbounded',sans-serif;font-size:54px;font-weight:900;color:rgba(108,92,231,.13);line-height:1;margin-bottom:20px}
+.step h3{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.4px;margin-bottom:10px}
+.step p{color:var(--sub);font-size:14px;line-height:1.65}
+
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:56px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.feat{padding:34px 28px;background:var(--card);transition:background .2s}
+.feat:hover{background:#14141e}
+.fico{width:40px;height:40px;background:rgba(108,92,231,.1);border:1px solid rgba(108,92,231,.18);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:16px}
+.feat h3{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
+.feat p{color:var(--sub);font-size:13px;line-height:1.65}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:56px;max-width:660px}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:34px 28px;transition:border-color .25s,transform .25s}
+.pcard:hover{border-color:rgba(108,92,231,.3);transform:translateY(-3px)}
+.pcard.hot{border-color:rgba(108,92,231,.32)}
+.hot-label{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.p-name{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;margin-bottom:12px}
+.p-price{font-family:'Unbounded',sans-serif;font-size:40px;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:6px}
+.p-price sup{font-size:18px;font-weight:400;vertical-align:super;margin-right:2px;color:var(--sub)}
+.p-price sub{font-size:14px;font-weight:400;color:var(--muted)}
+.p-desc{color:var(--sub);font-size:13px;line-height:1.5;margin-bottom:22px}
+.p-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:26px}
+.p-list li{font-size:13px;color:var(--sub);display:flex;gap:9px;align-items:flex-start}
+.p-list li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px}
+.p-btn{display:block;text-align:center;text-decoration:none;padding:12px;border-radius:8px;font-weight:700;font-size:14px;transition:opacity .2s,transform .2s}
+.p-btn.a{background:var(--accent);color:#fff}
+.p-btn.o{border:1px solid var(--border);color:var(--sub)}
+.p-btn:hover{opacity:.85;transform:translateY(-1px)}
+
+.faq{margin-top:52px;max-width:660px;display:flex;flex-direction:column;gap:2px}
+.fi{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.fq{width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:20px 22px;display:flex;justify-content:space-between;align-items:center;color:var(--text);font-family:'Golos Text',sans-serif;font-size:15px;font-weight:600;transition:color .2s}
+.fq:hover{color:var(--accent)}
+.fq-icon{color:var(--muted);font-size:18px;transition:transform .3s}
+.fa{padding:0 22px;max-height:0;overflow:hidden;color:var(--sub);font-size:14px;line-height:1.7;transition:max-height .35s ease,padding .35s ease}
+.fi.open .fa{max-height:200px;padding:0 22px 18px}
+.fi.open .fq-icon{transform:rotate(45deg)}
+
+.cta-box{margin-top:80px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:72px 52px;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(108,92,231,.1) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.cta-box h2,.cta-box p,.cta-box .btns{position:relative}
+.cta-box p{color:var(--sub);font-size:17px;max-width:440px;margin:0 auto 40px;line-height:1.65}
+.cta-box .btns{margin-bottom:0}
+
+footer{border-top:1px solid var(--border);padding:32px 52px;display:flex;align-items:center;justify-content:space-between}
+.ft-logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:var(--muted)}
+.ft-logo b{color:var(--accent)}
+footer p{color:var(--muted);font-size:13px}
+.ft-links{display:flex;gap:24px}
+.ft-links a{color:var(--muted);font-size:13px;text-decoration:none;transition:color .2s}
+.ft-links a:hover{color:var(--sub)}
+
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-r a:not(.nav-btn){display:none}
+  .steps,.feats{grid-template-columns:1fr}
+  .step{border-right:none;border-bottom:1px solid var(--border)}
+  .step:last-child{border-bottom:none}
+  .pricing-grid{grid-template-columns:1fr}
+  .demo-panels{grid-template-columns:1fr}
+  .cta-box{padding:48px 24px}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 24px}
+  .ft-links{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#"><b>P</b>rok</a>
+  <div class="nav-r">
+    <a href="#demo">Демо</a>
+    <a href="#how">Как работает</a>
+    <a href="#pricing">Цены</a>
+    <a href="#pricing" class="nav-btn">Скачать</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="orb"></div>
+  <div class="chip"><span class="chip-dot"></span>ИИ-помощник для Windows</div>
+  <h1>Выдели текст.<br><span class="grad">Получи результат.</span></h1>
+  <p class="hero-p">Prok появляется в любом приложении когда ты выделяешь текст.<br><strong>Перевод, орфография, запятые, перефраз</strong> — одним нажатием.</p>
+  <div class="btns">
+    <a href="#pricing" class="btn-p">Скачать бесплатно</a>
+    <a href="#demo" class="btn-g">Смотреть демо →</a>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="wrap-md">
+    <div style="text-align:center;margin-bottom:0">
+      <p class="lbl">Как это выглядит</p>
+      <h2>Выбери действие —<br>посмотри результат</h2>
+      <p style="color:var(--sub);font-size:16px;margin:16px auto 0;max-width:440px;line-height:1.65">Нажми на любую кнопку ниже и увидишь что делает Prok с текстом.</p>
+    </div>
+
+    <div class="demo-box">
+      <div class="demo-bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="demo-bar-title">Prok — демо</span>
+      </div>
+
+      <div class="demo-tabs">
+        <button class="tab active" data-action="spelling">✏️ Орфография</button>
+        <button class="tab" data-action="punctuation">📝 Запятые</button>
+        <button class="tab" data-action="en">🌐 На английский</button>
+        <button class="tab" data-action="ru">🌐 На русский</button>
+        <button class="tab" data-action="rephrase">🔄 Перефраз</button>
+        <button class="tab" data-action="explain">💡 Объяснить</button>
+      </div>
+
+      <div class="demo-panels">
+        <div class="panel">
+          <p class="panel-lbl">Исходный текст</p>
+          <p class="panel-text" id="inputPanel"></p>
+        </div>
+        <div class="panel out">
+          <p class="panel-lbl" id="outLabel">✏️ Исправленный текст</p>
+          <p class="panel-text" id="outputPanel"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section id="how">
+  <div class="wrap">
+    <p class="lbl">Как работает</p>
+    <h2>Три секунды<br>вместо трёх минут</h2>
+    <p class="s-sub">Никаких вкладок браузера, копипаста в ChatGPT и ожидания. Prok живёт прямо там, где ты работаешь.</p>
+    <div class="steps">
+      <div class="step"><div class="step-n">01</div><h3>Выдели текст</h3><p>В любом приложении — Word, Telegram, браузер, почта, Notion. Где угодно.</p></div>
+      <div class="step"><div class="step-n">02</div><h3>Нажми Ctrl+Shift+A</h3><p>Появляется компактное меню прямо рядом с курсором. Никаких лишних окон.</p></div>
+      <div class="step"><div class="step-n">03</div><h3>Выбери действие</h3><p>Результат готов за секунды. Копируй или вставляй обратно одной кнопкой.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section id="features">
+  <div class="wrap">
+    <p class="lbl">Возможности</p>
+    <h2>Всё что нужно<br>с текстом — здесь</h2>
+    <p class="s-sub">Prok работает на мощи Claude AI. Понимает контекст, не ломает стиль.</p>
+    <div class="feats">
+      <div class="feat"><div class="fico">🌐</div><h3>Перевод</h3><p>На русский или английский. Сохраняет стиль и тон оригинала.</p></div>
+      <div class="feat"><div class="fico">✏️</div><h3>Орфография</h3><p>Исправляет ошибки не меняя смысл и структуру текста.</p></div>
+      <div class="feat"><div class="fico">📝</div><h3>Запятые</h3><p>Только пунктуация — слова и стиль остаются нетронутыми.</p></div>
+      <div class="feat"><div class="fico">🔄</div><h3>Перефраз</h3><p>Переформулирует мысль по-другому, сохраняя суть.</p></div>
+      <div class="feat"><div class="fico">💡</div><h3>Объяснение</h3><p>Объясняет незнакомое слово или фразу простым языком.</p></div>
+      <div class="feat"><div class="fico">⚡</div><h3>Любое приложение</h3><p>Word, Telegram, Chrome, Outlook, Notion — везде одинаково.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section id="pricing">
+  <div class="wrap">
+    <p class="lbl">Цены</p>
+    <h2>Просто и честно</h2>
+    <p class="s-sub">Начни бесплатно. Переходи на про когда понадобится больше.</p>
+    <div class="pricing-grid">
+      <div class="pcard">
+        <p class="p-name">Старт</p>
+        <p class="p-price"><sup>₽</sup>0<sub> / навсегда</sub></p>
+        <p class="p-desc">Для личного использования и знакомства с Prok</p>
+        <ul class="p-list"><li>20 запросов в день</li><li>Все 5 функций</li><li>Свой API-ключ Anthropic</li><li>Windows 10 / 11</li></ul>
+        <a href="#" class="p-btn o">Скачать бесплатно</a>
+      </div>
+      <div class="pcard hot">
+        <p class="hot-label">● Популярный</p>
+        <p class="p-name">Про</p>
+        <p class="p-price"><sup>₽</sup>299<sub> / мес</sub></p>
+        <p class="p-desc">Без ограничений. API-ключ включён — ничего настраивать не надо.</p>
+        <ul class="p-list"><li>Безлимитные запросы</li><li>API-ключ включён в цену</li><li>Приоритетная поддержка</li><li>Обновления первым</li></ul>
+        <a href="#" class="p-btn a">Купить Про</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section>
+  <div class="wrap">
+    <p class="lbl">Вопросы</p>
+    <h2>Часто спрашивают</h2>
+    <div class="faq">
+      <div class="fi"><button class="fq">Нужны ли технические знания для установки? <span class="fq-icon">+</span></button><div class="fa">Нет. Скачиваешь архив, запускаешь ЗАПУСТИТЬ.bat — программа сама установит всё. В тарифе Про API-ключ уже встроен.</div></div>
+      <div class="fi"><button class="fq">Это безопасно? Мои тексты куда-то уходят? <span class="fq-icon">+</span></button><div class="fa">Тексты отправляются только в Anthropic API. Anthropic не хранит данные для обучения без согласия. Prok не собирает никакой статистики.</div></div>
+      <div class="fi"><button class="fq">В каких приложениях работает? <span class="fq-icon">+</span></button><div class="fa">В любых приложениях Windows — браузерах, Word, Excel, Telegram, Notion, VS Code и т.д. Если в приложении можно выделить текст — Prok там работает.</div></div>
+      <div class="fi"><button class="fq">Можно ли отменить подписку? <span class="fq-icon">+</span></button><div class="fa">Да, в любой момент. После отмены тариф Про остаётся активным до конца оплаченного периода.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<section>
+  <div class="wrap">
+    <div class="cta-box">
+      <h2>Попробуй Prok<br>прямо сейчас</h2>
+      <p>Бесплатно. Без регистрации. Работает через минуту после скачивания.</p>
+      <div class="btns"><a href="#pricing" class="btn-p">Скачать бесплатно</a><a href="#demo" class="btn-g">Смотреть демо →</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="ft-logo"><b>P</b>rok</span>
+  <p>© 2026 Prok. Сделано для тех, кто работает с текстом.</p>
+  <div class="ft-links"><a href="#">Поддержка</a><a href="#">Конфиденциальность</a><a href="#">Telegram</a></div>
+</footer>
+
+<script>
+const EXAMPLES = {
+  spelling: {
+    label: '✏️ Исправленный текст',
+    input: 'Сегодня я пошол в магазин и купил хлеб масло и малако. Продавщица была очень любезной и помогла мне найти нужные продукты.',
+    output: 'Сегодня я пошёл в магазин и купил хлеб, масло и молоко. Продавщица была очень любезной и помогла мне найти нужные продукты.',
+  },
+  punctuation: {
+    label: '📝 С расставленными запятыми',
+    input: 'Когда я пришёл домой я сразу же сел за компьютер чтобы проверить почту и ответить на все сообщения которые накопились за день.',
+    output: 'Когда я пришёл домой, я сразу же сел за компьютер, чтобы проверить почту и ответить на все сообщения, которые накопились за день.',
+  },
+  en: {
+    label: '🌐 Перевод на английский',
+    input: 'Встреча перенесена на среду. Нужно подготовить презентацию и отправить её заказчику до конца недели.',
+    output: 'The meeting has been rescheduled to Wednesday. The presentation needs to be prepared and sent to the client by the end of the week.',
+  },
+  ru: {
+    label: '🌐 Перевод на русский',
+    input: 'The deadline for the project has been moved to next Friday. Please make sure all team members are notified as soon as possible.',
+    output: 'Дедлайн по проекту перенесён на следующую пятницу. Пожалуйста, убедитесь, что все члены команды уведомлены как можно скорее.',
+  },
+  rephrase: {
+    label: '🔄 Перефразированный вариант',
+    input: 'Наш продукт очень хороший и мы думаем что вам стоит его купить потому что он поможет вам работать быстрее.',
+    output: 'Мы создали инструмент, который заметно ускоряет работу — попробуйте его и убедитесь сами.',
+  },
+  explain: {
+    label: '💡 Объяснение',
+    input: 'дедлайн',
+    output: 'Дедлайн — это крайний срок, до которого нужно завершить задачу или сдать работу. Слово пришло из английского (deadline) и широко используется в деловой и рабочей среде.',
+  },
+};
+
+const inputEl = document.getElementById('inputPanel');
+const outputEl = document.getElementById('outputPanel');
+const outLabel = document.getElementById('outLabel');
+
+function typeText(el, text, speed, cb) {
+  el.textContent = '';
+  let i = 0;
+  el.classList.add('typing');
+  const t = setInterval(() => {
+    el.textContent += text[i++];
+    if (i >= text.length) { clearInterval(t); el.classList.remove('typing'); if(cb) cb(); }
+  }, speed);
+}
+
+function showExample(action) {
+  const ex = EXAMPLES[action];
+  outLabel.textContent = ex.label;
+
+  // fade out
+  inputEl.style.opacity = '0';
+  outputEl.style.opacity = '0';
+
+  setTimeout(() => {
+    inputEl.textContent = ex.input;
+    inputEl.style.opacity = '1';
+    outputEl.style.opacity = '1';
+    // type output
+    typeText(outputEl, ex.output, 18);
+  }, 220);
+}
+
+// tab clicks
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    showExample(tab.dataset.action);
+  });
+});
+
+// init
+showExample('spelling');
+
+// FAQ
+document.querySelectorAll('.fq').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.fi');
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.fi').forEach(f => f.classList.remove('open'));
+    if (!open) item.classList.add('open');
+  });
+});
+
+// scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'} });
+}, {threshold:.1});
+document.querySelectorAll('.step,.feat,.pcard,.fi').forEach(el => {
+  el.style.opacity='0';el.style.transform='translateY(18px)';
+  el.style.transition='opacity .5s ease,transform .5s ease';
+  obs.observe(el);
+});
+
+// smooth input panel transition
+inputEl.style.transition = 'opacity .2s';
+outputEl.style.transition = 'opacity .2s';
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+anthropic
+pyperclip
+keyboard
+pystray
+Pillow
+pywin32
