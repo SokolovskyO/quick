@@ -12,3 +12,6 @@ desktop.ini
 
 # macOS
 .DS_Store
+
+# App config (contains API key)
+config.json

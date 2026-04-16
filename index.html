@@ -82,17 +82,7 @@ h2{font-family:'Unbounded',sans-serif;font-size:clamp(26px,3.5vw,44px);font-weig
 .panel.out{border-color:rgba(108,92,231,.2);background:rgba(108,92,231,.05)}
 .panel.out .panel-text{color:var(--text)}
 
-/* highlight differences */
-.hi{color:var(--accent2);font-weight:600}
-
-/* typing cursor animation */
-.panel.out .panel-text{position:relative}
-.typing::after{content:'|';color:var(--accent);animation:cur .7s step-end infinite}
-@keyframes cur{0%,100%{opacity:1}50%{opacity:0}}
-
-/* fade transition */
 .panel-text{transition:opacity .2s}
-.panel-text.fade{opacity:0}
 
 /* STEPS / FEATS / PRICING */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
@@ -173,7 +163,7 @@ footer p{color:var(--muted);font-size:13px}
     <a href="#demo">Демо</a>
     <a href="#how">Как работает</a>
     <a href="#pricing">Цены</a>
-    <a href="#pricing" class="nav-btn">Скачать</a>
+    <a href="https://github.com/SokolovskyO/prok" class="nav-btn" target="_blank">GitHub</a>
   </div>
 </nav>
 
@@ -183,7 +173,6 @@ footer p{color:var(--muted);font-size:13px}
   <h1>Выдели текст.<br><span class="grad">Получи результат.</span></h1>
   <p class="hero-p">Quick появляется в любом приложении когда ты выделяешь текст.<br><strong>Перевод, орфография, запятые, перефраз</strong> — одним нажатием.</p>
   <div class="btns">
-    <a href="#pricing" class="btn-p">Скачать бесплатно</a>
     <a href="#demo" class="btn-g">Смотреть демо →</a>
   </div>
 </section>
@@ -274,7 +263,7 @@ footer p{color:var(--muted);font-size:13px}
         <p class="p-price"><sup>₽</sup>0<sub> / навсегда</sub></p>
         <p class="p-desc">Для личного использования и знакомства с Quick</p>
         <ul class="p-list"><li>20 запросов в день</li><li>Все 5 функций</li><li>Свой API-ключ Anthropic</li><li>Windows 10 / 11</li></ul>
-        <a href="#" class="p-btn o">Скачать бесплатно</a>
+        <a href="https://github.com/SokolovskyO/prok" class="p-btn o" target="_blank">GitHub →</a>
       </div>
       <div class="pcard hot">
         <p class="hot-label">● Популярный</p>
@@ -282,7 +271,7 @@ footer p{color:var(--muted);font-size:13px}
         <p class="p-price"><sup>₽</sup>299<sub> / мес</sub></p>
         <p class="p-desc">Без ограничений. API-ключ включён — ничего настраивать не надо.</p>
         <ul class="p-list"><li>Безлимитные запросы</li><li>API-ключ включён в цену</li><li>Приоритетная поддержка</li><li>Обновления первым</li></ul>
-        <a href="#" class="p-btn a">Купить Про</a>
+        <a href="https://github.com/SokolovskyO/prok" class="p-btn a" target="_blank">GitHub →</a>
       </div>
     </div>
   </div>
@@ -310,7 +299,7 @@ footer p{color:var(--muted);font-size:13px}
     <div class="cta-box">
       <h2>Попробуй Quick<br>прямо сейчас</h2>
       <p>Бесплатно. Без регистрации. Работает через минуту после скачивания.</p>
-      <div class="btns"><a href="#pricing" class="btn-p">Скачать бесплатно</a><a href="#demo" class="btn-g">Смотреть демо →</a></div>
+      <div class="btns"><a href="https://github.com/SokolovskyO/prok" class="btn-p" target="_blank">GitHub →</a><a href="#demo" class="btn-g">Смотреть демо →</a></div>
     </div>
   </div>
 </section>
@@ -359,29 +348,34 @@ const inputEl = document.getElementById('inputPanel');
 const outputEl = document.getElementById('outputPanel');
 const outLabel = document.getElementById('outLabel');
 
-function typeText(el, text, speed, cb) {
+let activeInterval = null;
+let activeTimeout = null;
+
+function typeText(el, text, speed) {
+  if (activeInterval) { clearInterval(activeInterval); activeInterval = null; }
   el.textContent = '';
   let i = 0;
   el.classList.add('typing');
-  const t = setInterval(() => {
+  activeInterval = setInterval(() => {
     el.textContent += text[i++];
-    if (i >= text.length) { clearInterval(t); el.classList.remove('typing'); if(cb) cb(); }
+    if (i >= text.length) { clearInterval(activeInterval); activeInterval = null; el.classList.remove('typing'); }
   }, speed);
 }
 
 function showExample(action) {
+  if (activeTimeout) { clearTimeout(activeTimeout); activeTimeout = null; }
+  if (activeInterval) { clearInterval(activeInterval); activeInterval = null; }
+
   const ex = EXAMPLES[action];
   outLabel.textContent = ex.label;
 
-  // fade out
   inputEl.style.opacity = '0';
   outputEl.style.opacity = '0';
 
-  setTimeout(() => {
+  activeTimeout = setTimeout(() => {
     inputEl.textContent = ex.input;
     inputEl.style.opacity = '1';
     outputEl.style.opacity = '1';
-    // type output
     typeText(outputEl, ex.output, 18);
   }, 220);
 }
