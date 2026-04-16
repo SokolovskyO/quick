@@ -33,8 +33,8 @@ Quick — утилита для Windows, которая живёт в систе
 
 ### 2. Скачай Quick
 ```
-git clone https://github.com/SokolovskyO/prok.git
-cd prok
+git clone https://github.com/SokolovskyO/quick.git
+cd quick
 ```
 Или просто скачай ZIP и распакуй.
 
